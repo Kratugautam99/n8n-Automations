@@ -1,0 +1,463 @@
+{
+  "name": "Email_Classification_and_Auto_Response_Drafting",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        }
+      },
+      "id": "19fb85f1-9361-4862-815c-21968f03d623",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -480,
+        1232
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "OEChShi1pTSDPzsH",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "telegramChatId",
+              "value": "6230SD34217SD8DF5495",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "knowledgeBaseCollectionName",
+              "value": "customer_support_kb",
+              "type": "string"
+            },
+            {
+              "id": "2657a3d3-0890-4d39-ae0a-499a059da39f",
+              "name": "sessionId",
+              "value": "fjds;ljasdnkgnmt;ngak",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "5c97b9c6-8e6d-4300-a50d-4d87914ce46b",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "=customer_support_kb",
+          "mode": "id"
+        }
+      },
+      "id": "d853701d-630a-4699-828b-9c046d7c4197",
+      "name": "Knowledge Base Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Search the customer support knowledge base for relevant information to help draft accurate responses",
+        "memoryKey": {
+          "mode": "id",
+          "value": "={{ $('Workflow Configuration').first().json.knowledgeBaseCollectionName }}"
+        },
+        "topK": 3
+      },
+      "id": "5e48b2e1-2ebf-48bb-96e8-b83c55ec7f16",
+      "name": "Retrieve from Knowledge Base",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        1456
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.telegramChatId }}",
+        "text": "=📧 New Customer Email Classified\n\n👤 From: {{ $('Gmail Trigger').item.json.From }}\n📋 Subject: {{ $('Gmail Trigger').item.json.Subject }}\n🏷️ Category: {{ $json.output.category }}\n⚡ Priority: {{ $json.output.priority }}\n\n📝 Drafted Response:\n{{ $json.output.draftedResponse }}\n\n✅ Please review and send the response.",
+        "additionalFields": {}
+      },
+      "id": "ea4e8a2b-0407-4a69-a631-45c4c9a1f4d7",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        1232
+      ],
+      "webhookId": "0ed8afb6-6c4e-4044-84b6-2ef22e0150a1",
+      "credentials": {
+        "telegramApi": {
+          "id": "9z88neosFeBei1tM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"category\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"Email category: Technical Support, Billing Question, Feature Request, Bug Report, General Inquiry, or Complaint\"\n\t\t},\n\t\t\"priority\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"Priority level: High, Medium, or Low\"\n\t\t},\n\t\t\"draftedResponse\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"The drafted email response text\"\n\t\t},\n\t\t\"suggestedActions\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"description\": \"Any suggested follow-up actions for the support team\"\n\t\t}\n\t}\n}"
+      },
+      "id": "b1aaf46d-4578-4507-8fcb-be0a2f583937",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        1456
+      ]
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.pageContent }}",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "id": "5e0a6f4e-a8d7-4054-befd-1da6fe08421d",
+      "name": "Document Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "377af726-b01f-4cef-bf69-c2c5f4e2447f",
+      "name": "Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        176,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds"
+            }
+          ]
+        }
+      },
+      "id": "f03338fc-1dff-4228-9f30-6c630d94c6fd",
+      "name": "Schedule Trigger - Load Knowledge Base",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -480,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "pageContent",
+              "value": "Urban AI Systems → Cities like Singapore and Tokyo are experimenting with AI‑driven traffic flow optimization, where sensors and cameras feed into models that adjust signals in real time.  Drone Mapping → Drones are being used to create 3D maps of entire districts, helping planners spot congestion points or unsafe structures.  Citizen Services → Imagine a workflow (like the ones you’re building in n8n) but applied to city services: incoming reports of potholes or outages get automatically classified, routed to the right department, and tracked until resolved.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "042ba841-f35e-4391-9ae8-b88f12b6bbe0",
+      "name": "Prepare Knowledge Base Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "model": "mistral-small-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        1456
+      ],
+      "id": "bba20966-de07-4ae0-b40b-23c21a9c7fb7",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "qrzf6Ge5G9k3bp1a",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        608
+      ],
+      "id": "6dbeaf57-4ca4-43a1-8b10-51baf50acf44",
+      "name": "Embeddings HF Inference",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "mw0zIGeQEmj4bmaD",
+          "name": "Hugging Face account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        336,
+        1600
+      ],
+      "id": "d56e33cb-64f5-4da7-be4d-3a7f26c346f2",
+      "name": "Embeddings HF Inference1",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "mw0zIGeQEmj4bmaD",
+          "name": "Hugging Face account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        96,
+        1456
+      ],
+      "id": "49679253-060a-4c82-9402-78ff389df05c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Email From: {{ $json.from }}\nEmail Subject: {{ $json.subject }}\nEmail Body: {{ $json.textPlain || $json.textHtml }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a customer support email assistant. Your task is to:\n\n1. Classify the incoming email into one of these categories: Technical Support, Billing Question, Feature Request, Bug Report, General Inquiry, Complaint\n\n2. Determine the priority level: High, Medium, or Low\n\n3. Use the Retrieve from Knowledge Base tool to search for relevant information that can help draft an accurate response\n\n4. Draft a professional, helpful response email that addresses the customer's concerns using information from the knowledge base\n\nReturn your analysis in the structured format defined by the output parser."
+        }
+      },
+      "id": "56e67845-19d1-4a38-a881-684ec5f0dc55",
+      "name": "Email Classifier, Response Drafter",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        128,
+        1232
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Email Classifier, Response Drafter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Email Classifier, Response Drafter",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve from Knowledge Base": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Classifier, Response Drafter",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Knowledge Base Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - Load Knowledge Base": {
+      "main": [
+        [
+          {
+            "node": "Prepare Knowledge Base Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Knowledge Base Data": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Base Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Classifier, Response Drafter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HF Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Knowledge Base Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HF Inference1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Retrieve from Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Email Classifier, Response Drafter",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Classifier, Response Drafter": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e4ecda43-98e2-4525-81d6-8939aaf0efe1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
+  },
+  "nodeGroups": [],
+  "id": "zJgnEcI4M5jZFutq",
+  "tags": []
+}

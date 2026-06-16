@@ -1,0 +1,598 @@
+{
+  "name": "B2B_Lead_Generation_and_Qualification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-generation",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "11ff27c5-59e9-4131-9f15-9b2415aadb6c",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        -384
+      ],
+      "webhookId": "f5947811-bcc2-4abe-a015-2e293eb5c84e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "serpApiKey",
+              "value": "b30fb5613c5c7a473acce43df69e6ebe7f966a6c4de4515bc47b390bbf71e3b4",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "delaySeconds",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "minQualityScore",
+              "value": 2,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d50d30e7-00e4-4768-bc30-ce9eaf6bdb1f",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        944,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://serpapi.com/search.json?engine=google_maps&q={{ encodeURIComponent($json.body.keyword) }}&api_key={{ $('Workflow Configuration').first().json.serpApiKey }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "ee35736a-f59d-4d01-a18b-b144222f4246",
+      "name": "Search Google Maps via SerpApi",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1184,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "place_results",
+        "options": {}
+      },
+      "id": "a074e3af-23c0-4f2c-974f-1eb5195c603f",
+      "name": "Split Business Results",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Workflow Configuration').first().json.delaySeconds }}"
+      },
+      "id": "79aa9f20-6ead-4e35-b4e4-e5d380b81663",
+      "name": "Rate Limit Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1648,
+        -384
+      ],
+      "webhookId": "d8f7fd47-0daa-4791-9a85-39ac5c16c6e2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Search Google Maps via SerpApi').item.json.place_results.reservation.link }}",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "2fae63d7-fdd8-4cb1-a98e-f9787b83168d",
+      "name": "Fetch Website Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1840,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Business Name: {{ $('Webhook Trigger').item.json.body.title }}\nWebsite: {{ $('Webhook Trigger').item.json.body.website }}\nPhone: {{ $('Webhook Trigger').item.json.body.phone }}\nCompany: {{ $('Webhook Trigger').item.json.body.company }}\n\nWebsite Content:\n{{ $json.data.slice(0, 10000)}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a B2B lead qualification specialist for an IT and AI solutions agency.\n\nYour task is to:\n1. Analyze the business website content provided\n2. Determine if this company could benefit from Custom Software Development or AI Automation solutions\n3. Score the lead from 1-10 based on:\n   - Business size and sophistication\n   - Technology adoption indicators\n   - Pain points that IT/AI could solve\n   - Budget indicators\n4. Extract decision maker information (CEO, CTO, Founder, Owner) if mentioned\n5. Extract contact email addresses, prioritizing decision maker emails over generic ones\n\nReturn your analysis in the structured format defined by the output parser."
+        }
+      },
+      "id": "05a2b29e-c7c1-415b-91f1-efc8604a678f",
+      "name": "AI Lead Qualifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        720,
+        -176
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"qualityScore\": 8,\n\t\"decisionMaker\": \"John Smith\",\n\t\"email\": \"john.smith@example.com\",\n\t\"reasoning\": \"Strong fit for AI automation services based on company size and industry\",\n\t\"potentialServices\": \"Both\"\n}"
+      },
+      "id": "a4eb2ba1-5e45-40d0-ad06-69c62b46eb37",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1024,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.output.qualityScore }}",
+              "rightValue": "={{ $('Workflow Configuration').first().json.minQualityScore }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5357436c-3b31-491a-a4f3-33009cc71ab5",
+      "name": "Filter High-Quality Leads",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1216,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "Business Name",
+              "value": "={{ $('Webhook Trigger').item.json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "Website",
+              "value": "={{ $('Webhook Trigger').item.json.body.website }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "Phone",
+              "value": "={{ $('Webhook Trigger').item.json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "Address",
+              "value": "={{ $('Webhook Trigger').item.json.body.address }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "Decision Maker",
+              "value": "={{ $('AI Lead Qualifier').item.json.output.decisionMaker }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "Email",
+              "value": "={{ $('AI Lead Qualifier').item.json.output.email }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "Quality Score",
+              "value": "={{ $('AI Lead Qualifier').item.json.output.qualityScore }}",
+              "type": "number"
+            },
+            {
+              "id": "id-8",
+              "name": "Reasoning",
+              "value": "={{ $('AI Lead Qualifier').item.json.output.reasoning }}",
+              "type": "string"
+            },
+            {
+              "id": "id-9",
+              "name": "Potential Services",
+              "value": "={{ $('AI Lead Qualifier').item.json.output.potentialServices }}",
+              "type": "string"
+            },
+            {
+              "id": "id-10",
+              "name": "Date Added",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4d12a116-50f2-4433-9626-8bec37187e9b",
+      "name": "Format Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1g8u9Bx5K9OAHpf5LBls4w3h8mZNPAdXTwY9iGwsHhEI",
+          "mode": "list",
+          "cachedResultName": "B2B Lead Generation and Qualification",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g8u9Bx5K9OAHpf5LBls4w3h8mZNPAdXTwY9iGwsHhEI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1g8u9Bx5K9OAHpf5LBls4w3h8mZNPAdXTwY9iGwsHhEI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Business Name": "={{ $json['Business Name'] }}",
+            "Website": "={{ $json.Website }}",
+            "Phone": "={{ $json.Phone }}",
+            "Address": "={{ $json.Address }}",
+            "Decision Maker": "={{ $json['Decision Maker'] }}",
+            "Email": "={{ $json.Email }}",
+            "Quality Score": "={{ $json['Quality Score'] }}",
+            "Reasoning": "={{ $json.Reasoning }}",
+            "Potential Services": "={{ $json['Potential Services'] }}",
+            "Date Added": "={{ $now.toFormat('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [
+            "Business Name"
+          ],
+          "schema": [
+            {
+              "id": "Business Name",
+              "displayName": "Business Name",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Decision Maker",
+              "displayName": "Decision Maker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Quality Score",
+              "displayName": "Quality Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Reasoning",
+              "displayName": "Reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Potential Services",
+              "displayName": "Potential Services",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Date Added",
+              "displayName": "Date Added",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "2ed96d82-ce99-46e8-8c57-0ca4d3ecb7f5",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1776,
+        -176
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4Gv3u4UT3sQPc07z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -48
+      ],
+      "id": "94f3755f-8dcd-439f-a17b-d300c4b10444",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook Trigger": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "user-agent": "curl/8.19.0",
+            "accept": "*/*",
+            "content-type": "application/json",
+            "content-length": "100"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "company": "Acme Corp",
+            "phone": "+1-555-123-4567",
+            "title": "Information about Openings",
+            "website": "www.alicejohnson.profile",
+            "address": "new york, usa"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/lead-generation",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Search Google Maps via SerpApi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Google Maps via SerpApi": {
+      "main": [
+        [
+          {
+            "node": "Split Business Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Business Results": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit Delay": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Website Content": {
+      "main": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Lead Qualifier": {
+      "main": [
+        [
+          {
+            "node": "Filter High-Quality Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter High-Quality Leads": {
+      "main": [
+        [
+          {
+            "node": "Format Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d30c1b61-16d2-4318-aaff-3ddc017bd0cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
+  },
+  "nodeGroups": [],
+  "id": "L0b3gKy33d6icboX",
+  "tags": []
+}
