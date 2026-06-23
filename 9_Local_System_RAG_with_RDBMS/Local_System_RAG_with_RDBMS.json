@@ -956,8 +956,8 @@
     {
       "parameters": {
         "mode": "retrieve-as-tool",
-        "toolName": "documents",
-        "toolDescription": "Use RAG to look up information in the knowledgebase.",
+        "toolName": "llm_knowledge_base",
+        "toolDescription": "work with the local postgres server to access the database and its functions",
         "tableName": "documents_pg",
         "options": {}
       },
@@ -978,6 +978,7 @@
     },
     {
       "parameters": {
+        "model": "=llama3.2",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
@@ -1043,7 +1044,18 @@
       "alwaysOutputData": true
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "RAG AI Agent": [
+      {
+        "json": {
+          "output": "Based on my search, Hotmail was a popular free web-based email service provided by Microsoft. It was launched in 1996 and was one of the first widely used web-based email services. Hotmail allowed users to create accounts, send and receive emails, and even use a basic interface to compose and edit messages.\n\nHotmail was later acquired by Microsoft in 1997 and became part of its suite of online services. Over time, Microsoft rebranded Hotmail as Live Mail, and eventually, it was phased out in favor of Outlook.com in 2012.\n\nOutlook.com is still available today and offers many similar features to Hotmail, including email accounts, calendar tools, and more. If you're looking for a simple way to manage your emails, Outlook.com might be worth checking out!"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "connections": {
     "Switch": {
       "main": [
@@ -1326,13 +1338,7 @@
     },
     "Postgres PGVector Store1": {
       "ai_tool": [
-        [
-          {
-            "node": "RAG AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Read/Write Files from Disk": {
@@ -1419,7 +1425,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "74d4e651-00ea-4358-a6af-0697b6748977",
+  "versionId": "f571dea8-ffa9-4963-851f-019e78561c52",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
