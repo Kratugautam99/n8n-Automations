@@ -1,0 +1,977 @@
+{
+  "name": "Client_Feedback_Form_Airtable_Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "form": "="
+      },
+      "type": "n8n-nodes-base.jotFormTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        1072
+      ],
+      "id": "6878d597-58d6-49cc-9e84-7341fac9c2d0",
+      "name": "Jotform Trigger",
+      "webhookId": "7d4b7ddb-7616-4175-b62f-3af2508590d8",
+      "credentials": {
+        "jotFormApi": {
+          "id": "7Ksq3VnlZ2M1refD",
+          "name": "JotForm account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb058bf4-ba64-472f-9e92-f5a8dd3f41dc",
+              "name": "E-mail",
+              "value": "Kilimongerunleashed@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        1072
+      ],
+      "id": "6a0ace90-3c06-442d-95f5-9882d456e352",
+      "name": "Set Parameter"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app48A7puLtuw3yOd",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback",
+          "cachedResultUrl": "https://airtable.com/app48A7puLtuw3yOd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJ3rJxd0prVWRhv",
+          "mode": "list",
+          "cachedResultName": "Input Details",
+          "cachedResultUrl": "https://airtable.com/app48A7puLtuw3yOd/tblJ3rJxd0prVWRhv"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "AI Processed": true,
+            "Source": "JotForm [Web]",
+            "Status": "Processed",
+            "Feedback Message": "={{ $('Jotform Trigger').item.json['Please describe your feedback'] }}",
+            "Rating": "={{ $('Jotform Trigger').item.json['How would you rate your overall experience?'] }}",
+            "Service Type": "={{ $('Jotform Trigger').item.json['Select the service related to your feedback'] }}",
+            "Email": "={{ $('Jotform Trigger').item.json['E-mail'] }}",
+            "Last Name": "={{ $('Jotform Trigger').item.json.Name.Last }}",
+            "First Name": "={{ $('Jotform Trigger').item.json.Name.First }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service Type",
+              "displayName": "Service Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Rating",
+              "displayName": "Rating",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Feedback Message",
+              "displayName": "Feedback Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Received",
+                  "value": "Received"
+                },
+                {
+                  "name": "In Review",
+                  "value": "In Review"
+                },
+                {
+                  "name": "Processed",
+                  "value": "Processed"
+                },
+                {
+                  "name": "Closed",
+                  "value": "Closed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Processed",
+              "displayName": "AI Processed",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        592,
+        1072
+      ],
+      "id": "c027ecb4-bd44-4d4a-acea-0cb7fd2921f6",
+      "name": "Create Customer Feedback",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ThueyRyGhbXO9udP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        1280
+      ],
+      "id": "97dba07b-fbbd-4ce6-a9b8-a97ed34fe5bb",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"ai_sentiment\": \"\",\n  \"ai_category\": \"\",\n  \"ai_urgency\": \"\",\n  \"ai_summary\": \"\",\n  \"priority_score\": 0,\n  \"confidence_score\": 0,\n  \"root_cause\": \"\",\n  \"recovery_direction\": \"\",\n  \"recovery_message\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        1280
+      ],
+      "id": "582af589-2791-4675-afe0-4e7f5620b23a",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Customer Feedback Analysis AI.\n\nYour task is to analyze customer feedback and return a STRICTLY VALID JSON object.\nDO NOT include explanations, markdown, comments, or any text outside the JSON.\nDO NOT add extra fields.\nUse the exact field names and allowed values defined below.\n\n========================\nINPUT DATA\n========================\nService Type: {{ $json.fields['Service Type'] }}\nRating (1–5): {{ $json.fields.Rating }}\nFeedback Message:\n\"\"\"\n{{ $json.fields['Feedback Message'] }}\n\"\"\"\n\n========================\nANALYSIS RULES\n========================\n\n1. AI Sentiment\nChoose ONE:\n- Positive\n- Neutral\n- Negative\n\nRules:\n- Rating 1–2 → Negative (unless message clearly positive)\n- Rating 3 → Neutral\n- Rating 4–5 → Positive (unless message clearly negative)\n\n2. AI Category\nChoose ONE:\n- Complaint\n- Praise\n- Bug\n- Feature Request\n- General\n\nRules:\n- Complaint: dissatisfaction, frustration, poor experience\n- Praise: satisfaction, compliments, positive experience\n- Bug: errors, failures, crashes, not working\n- Feature Request: asking for new or improved functionality\n- General: informational or unclear feedback\n\n3. AI Urgency\nChoose ONE:\n- High\n- Medium\n- Low\n\nRules:\n- High: payment issues, service blocking, strong anger, repeated failure\n- Medium: delays, inconvenience, partial failure\n- Low: praise, suggestions, non-blocking issues\n\n4. Priority Score (1–10)\nRules:\n- 9–10: Critical business impact, payment or service-blocking issue\n- 6–8: Clear problem affecting user experience\n- 3–5: Minor issue or moderate concern\n- 1–2: Praise or low-impact feedback\n\n5. Confidence Score (1–10)\nRules:\n- 9–10: Very clear feedback with strong signals\n- 6–8: Mostly clear with minor ambiguity\n- 3–5: Short or somewhat unclear\n- 1–2: Very vague or confusing\n\n6. AI Summary\n- One short, clear sentence\n- Neutral and professional tone\n- No emotional language\n\n7. Root Cause\n- Identify the most likely underlying cause\n- Be specific and concise\n- Do NOT blame the customer\n\n8. Recovery Direction\n- Describe what the company should do internally\n- Action-oriented and practical\n- One sentence\n\n9. Recovery Message\n- Short, polite, empathetic message\n- Written directly to the customer\n- Apologize if sentiment is Negative\n- Thank the customer if sentiment is Positive or Neutral\n- Do NOT mention AI\n- Professional and human tone\n\n========================\nOUTPUT FORMAT (JSON ONLY)\n========================\n\n{\n  \"ai_sentiment\": \"\",\n  \"ai_category\": \"\",\n  \"ai_urgency\": \"\",\n  \"ai_summary\": \"\",\n  \"priority_score\": 0,\n  \"confidence_score\": 0,\n  \"root_cause\": \"\",\n  \"recovery_direction\": \"\",\n  \"recovery_message\": \"\"\n}\n",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        800,
+        1072
+      ],
+      "id": "2426cf3c-5e92-4daa-9c8c-615f503099d7",
+      "name": "Generate AI Analysis LLM Chain"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app48A7puLtuw3yOd",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback",
+          "cachedResultUrl": "https://airtable.com/app48A7puLtuw3yOd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbldQEFDf0rmOOXrn",
+          "mode": "list",
+          "cachedResultName": "AI Analysis",
+          "cachedResultUrl": "https://airtable.com/app48A7puLtuw3yOd/tbldQEFDf0rmOOXrn"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Create Customer Feedback').item.json.id }}",
+            "AI Sentiment": "={{ $json.output.ai_sentiment }}",
+            "AI Category": "Praise",
+            "AI Urgency": "={{ $json.output.ai_urgency }}",
+            "AI Summary": "={{ $json.output.ai_summary }}",
+            "Priority Score": "={{ $json.output.priority_score }}",
+            "Confidence Score": "={{ $json.output.confidence_score }}",
+            "Root Cause": "={{ $json.output.root_cause }}",
+            "Recovery Direction": "={{ $json.output.recovery_direction }}",
+            "Recovery Message": "={{ $json.output.recovery_message }}",
+            "Processing Status": "Completed"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Sentiment",
+              "displayName": "AI Sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Category",
+              "displayName": "AI Category",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Complaint",
+                  "value": "Complaint"
+                },
+                {
+                  "name": "Praise",
+                  "value": "Praise"
+                },
+                {
+                  "name": "Bug",
+                  "value": "Bug"
+                },
+                {
+                  "name": "Feature",
+                  "value": "Feature"
+                },
+                {
+                  "name": "Request",
+                  "value": "Request"
+                },
+                {
+                  "name": "General",
+                  "value": "General"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Urgency",
+              "displayName": "AI Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Low",
+                  "value": "Low"
+                },
+                {
+                  "name": "High",
+                  "value": "High"
+                },
+                {
+                  "name": "Medium",
+                  "value": "Medium"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Priority Score",
+              "displayName": "Priority Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Root Cause",
+              "displayName": "Root Cause",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recovery Direction",
+              "displayName": "Recovery Direction",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recovery Message",
+              "displayName": "Recovery Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Processed Time",
+              "displayName": "Processed Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Processing Status",
+              "displayName": "Processing Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending",
+                  "value": "Pending"
+                },
+                {
+                  "name": "Completed",
+                  "value": "Completed"
+                },
+                {
+                  "name": "Failed",
+                  "value": "Failed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        1072
+      ],
+      "id": "0e633118-e1f6-4331-b38d-d3ffca14a015",
+      "name": "Create AI Analysis",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ThueyRyGhbXO9udP",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1c511af3-af74-4e6b-b849-94754939a9e8",
+              "leftValue": "={{ $json.fields['AI Sentiment'] }}",
+              "rightValue": "Negative",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "40b8cdb3-ea55-4df1-9efe-635c8e57a968",
+              "leftValue": "={{ $('Create Customer Feedback').item.json.fields.Rating }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        976
+      ],
+      "id": "d0f6001c-500f-47d6-9c52-469964f18b0c",
+      "name": "If Sentiment is negative"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1c511af3-af74-4e6b-b849-94754939a9e8",
+              "leftValue": "={{ $json.fields['AI Sentiment'] }}",
+              "rightValue": "Positive",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "40b8cdb3-ea55-4df1-9efe-635c8e57a968",
+              "leftValue": "={{ $('Create Customer Feedback').item.json.fields.Rating }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        1200
+      ],
+      "id": "5bb5e545-24a9-45f3-a44c-31a005dde86d",
+      "name": "If Sentiment is positive"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BD8B9CA9E",
+          "mode": "list",
+          "cachedResultName": "positive-feedback"
+        },
+        "text": "=🎉 POSITIVE CUSTOMER FEEDBACK\n\nCustomer Name: {{ $('Create Customer Feedback').item.json.fields['First Name'] }} {{ $('Create Customer Feedback').item.json.fields['Last Name'] }}\nEmail: {{ $('Create Customer Feedback').item.json.fields.Email }}\n\nService Type: {{ $('Create Customer Feedback').item.json.fields['Service Type'] }}\nRating: {{ $('Create Customer Feedback').item.json.fields.Rating }} / 5\nAI Sentiment: {{ $('Create AI Analysis').item.json.fields['AI Sentiment'] }}\nAI Category: {{ $('Create AI Analysis').item.json.fields['AI Category'] }}\nConfidence Score (1-10): {{ $('Create AI Analysis').item.json.fields['Confidence Score'] }}\n\nFeedback Message:\n\"{{ $('Create Customer Feedback').item.json.fields['Feedback Message'] }}\"\n\nAI Summary:\n{{ $('Create AI Analysis').item.json.fields['AI Summary'] }}\n\nGreat job to the team! 🙌\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1664,
+        1664
+      ],
+      "id": "2ada0ac9-1aea-40d7-92fd-f7e774e60b71",
+      "name": "Slack Message - Positive Channel",
+      "webhookId": "51f3732e-8276-4a18-b1ea-8e9ed6021531",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "EE8LABkGKvOLtS6h",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Set Parameter').item.json['E-mail'] }}",
+        "subject": "🚨 Urgent Customer Feedback – Immediate Action Required",
+        "bodyContent": "=Subject: 🚨 Urgent Customer Feedback – Immediate Action Required\n\nHello Team,\n\nWe have received an urgent customer feedback that requires immediate attention.\n\nCustomer Name: {{ $('Create Customer Feedback').item.json.fields['First Name'] }} {{ $('Create Customer Feedback').item.json.fields['Last Name'] }}\nEmail: {{ $('Create Customer Feedback').item.json.fields.Email }}\nService Type: {{ $('Create Customer Feedback').item.json.fields['Service Type'] }}\n\nRating: {{ $('Create Customer Feedback').item.json.fields.Rating }} / 5\nAI Sentiment: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_sentiment }}\nAI Category: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_category }}\nAI Urgency: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_urgency }}\n\nPriority Score (1-10): {{ $('Generate AI Analysis LLM Chain').item.json.output.priority_score }}\nConfidence Score (1-10): {{ $('Generate AI Analysis LLM Chain').item.json.output.confidence_score }}\n\nFeedback Message:\n\"{{ $('Create Customer Feedback').item.json.fields['Feedback Message'] }}\"\n\nAI Summary:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.ai_summary }}\n\nRoot Cause:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.root_cause }}\n\nRecommended Action:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.recovery_direction }}\n\nPlease investigate and take the necessary corrective actions as soon as possible.\n\nThank you.\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        752
+      ],
+      "id": "ea626c01-b68a-4d04-a85a-dbaa89d15d34",
+      "name": "Email to Operational Employee - Urgent Case",
+      "webhookId": "2d053493-cc8d-4cd4-95d8-95754943445c",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "k2tmf56YqUEz1qU6",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Set Parameter').item.json['E-mail'] }}",
+        "subject": "🎉 Positive Customer Feedback Received",
+        "bodyContent": "=Hello Team,\n\nWe would like to share a positive customer feedback received recently.\n\nCustomer Name: {{ $('Create Customer Feedback').item.json.fields['First Name'] }} {{ $('Create Customer Feedback').item.json.fields['Last Name'] }}\nService Type: {{ $('Create Customer Feedback').item.json.fields['Service Type'] }}\nRating: {{ $('Create Customer Feedback').item.json.fields.Rating }} / 5\n\nAI Summary:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.ai_summary }}\n\nFeedback Message:\n\"{{ $('Create Customer Feedback').item.json.fields['Feedback Message'] }}\"\n\nThis reflects the good work being done by the team. Please keep up the great effort.\n\nBest regards.\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        1440
+      ],
+      "id": "baa4a183-d4aa-4503-b219-b8d2ad7773c7",
+      "name": "Email to Operational Employee - Positive Case",
+      "webhookId": "2d053493-cc8d-4cd4-95d8-95754943445c",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "k2tmf56YqUEz1qU6",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Create Customer Feedback').item.json.fields.Email }}",
+        "subject": "Thank You for Your Feedback!",
+        "bodyContent": "=Hi {{ $('Create Customer Feedback').item.json.fields['First Name'] }},\n\n{{ $('Create AI Analysis').item.json.fields['Recovery Message'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        1216
+      ],
+      "id": "3cee478e-f687-40dc-94f5-90910fbf58fe",
+      "name": "Email to User - Recovery Message (Positive)",
+      "webhookId": "2d053493-cc8d-4cd4-95d8-95754943445c",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "k2tmf56YqUEz1qU6",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Create Customer Feedback').item.json.fields.Email }}",
+        "subject": "We’re Sorry for the Experience – We’re Here to Help",
+        "bodyContent": "=Hi {{ $('Create Customer Feedback').item.json.fields['First Name'] }},\n\n{{ $('Create AI Analysis').item.json.fields['Recovery Message'] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        576
+      ],
+      "id": "7571f0a2-110d-41e9-8f01-0a55ce533a0f",
+      "name": "Email to User - Recovery Message (Negative / Urgent )",
+      "webhookId": "2d053493-cc8d-4cd4-95d8-95754943445c",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "k2tmf56YqUEz1qU6",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        1280
+      ],
+      "id": "3a785650-e316-47bc-83f8-42004b82305a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BBYJ675JB",
+          "mode": "list",
+          "cachedResultName": "negative-feedback"
+        },
+        "text": "=🚨 URGENT CUSTOMER FEEDBACK ALERT\n\nCustomer Name: {{ $('Create Customer Feedback').item.json.fields['First Name'] }} {{ $('Create Customer Feedback').item.json.fields['Last Name'] }}\nEmail: {{ $('Create Customer Feedback').item.json.fields.Email }}\n\nService Type: {{ $('Create Customer Feedback').item.json.fields['Service Type'] }}\nRating: {{ $('Create Customer Feedback').item.json.fields.Rating }} / 5\nAI Sentiment: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_sentiment }}\nAI Category: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_category }}\nAI Urgency: {{ $('Generate AI Analysis LLM Chain').item.json.output.ai_urgency }}\nPriority Score (1-10): {{ $('Generate AI Analysis LLM Chain').item.json.output.priority_score }}\nConfidence Score (1-10): {{ $('Generate AI Analysis LLM Chain').item.json.output.confidence_score }}\n\nFeedback Message:\n\"{{ $('Create Customer Feedback').item.json.fields['Feedback Message'] }}\"\n\nAI Summary:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.ai_summary }}\n\nRoot Cause:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.root_cause }}\n\nRecommended Action:\n{{ $('Generate AI Analysis LLM Chain').item.json.output.recovery_direction }}\n\nPlease review and take action immediately.\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1632,
+        928
+      ],
+      "id": "383a67db-51d3-40c9-b85a-c9462ec83703",
+      "name": "Slack Message - Negative Channel",
+      "webhookId": "51f3732e-8276-4a18-b1ea-8e9ed6021531",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "EE8LABkGKvOLtS6h",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Jotform Trigger": [
+      {
+        "json": {
+          "Name": {
+            "First": "Kili",
+            "Last": "Monger"
+          },
+          "E-mail": "Kilimonger@gmail.com",
+          "Select the service related to your feedback": "Customer Support",
+          "How would you rate your overall experience?": "5",
+          "Please describe your feedback": "Execellent Services"
+        }
+      }
+    ],
+    "Create Customer Feedback": [
+      {
+        "json": {
+          "id": "rec1UJKgXWyN7vfIo",
+          "createdTime": "2026-06-22T23:39:42.000Z",
+          "fields": {
+            "Email": "Kilimonger@gmail.com",
+            "First Name": "Kili",
+            "Feedback Message": "Execellent Services",
+            "Last Name": "Monger",
+            "Submitted At": "2026-06-22T23:39:42.000Z",
+            "Source": "JotForm [Web]",
+            "Rating": 5,
+            "Service Type": "Customer Support",
+            "AI Processed": true,
+            "Status": "Processed"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Create AI Analysis": [
+      {
+        "json": {
+          "id": "reciEIsgZnTb70wXq",
+          "createdTime": "2026-06-23T00:07:42.000Z",
+          "fields": {
+            "Priority Score": 1,
+            "Recovery Direction": "Maintain current service standards and recognize the support team for their performance.",
+            "AI Sentiment": "Positive",
+            "AI Summary": "The customer expressed high satisfaction with the support services received.",
+            "Processed Time": "2026-06-23T00:07:42.000Z",
+            "Recovery Message": "Thank you for your kind words! We are thrilled to hear you had an excellent experience with our customer support team.",
+            "ID": "rec1UJKgXWyN7vfIo",
+            "Confidence Score": 10,
+            "AI Urgency": "Low",
+            "Processing Status": "Completed",
+            "Root Cause": "Consistent delivery of high-quality customer support.",
+            "AI Category": "Praise"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Jotform Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Parameter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Parameter": {
+      "main": [
+        [
+          {
+            "node": "Create Customer Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Customer Feedback": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Analysis LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Parameter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate AI Analysis LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Analysis LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Create AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create AI Analysis": {
+      "main": [
+        [
+          {
+            "node": "If Sentiment is negative",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If Sentiment is positive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Sentiment is negative": {
+      "main": [
+        [
+          {
+            "node": "Slack Message - Negative Channel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email to Operational Employee - Urgent Case",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email to User - Recovery Message (Negative / Urgent )",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Sentiment is positive": {
+      "main": [
+        [
+          {
+            "node": "Slack Message - Positive Channel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email to Operational Employee - Positive Case",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email to User - Recovery Message (Positive)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate AI Analysis LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "530fdd18-4999-4b6d-af82-63e0cc96610c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
+  },
+  "nodeGroups": [],
+  "id": "8gnGhzhN27oqq3dD",
+  "tags": []
+}

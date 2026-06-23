@@ -1,0 +1,872 @@
+{
+  "name": "AI_Video_Twitter_X_Spam",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "bfdb4703-89ee-468f-a3dd-64ccef5a43bb",
+      "name": "Trigger: Start Daily Content Generation",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        768,
+        256
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {},
+      "id": "3393aafd-ea35-46d4-b648-8e2f00c53bed",
+      "name": "Tool: Inject Creative Perspective (Idea)",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "position": [
+        1248,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"Caption\": \"Diver Removes Nets Off Whale 🐋 #whalerescue #marinelife #oceanrescue #seahelpers #love #nature #instagood #explore #viral #savenature #oceanguardians #cleanoceans\",\n    \"Idea\": \"Diver carefully cuts tangled net from distressed whale in open sea\",\n    \"Environment\": \"Open ocean, sunlight beams through water, diver and whale, cinematic realism\",\n    \"Sound\": \"Primary sound description under 15 words\",\n    \"Status\": \"for production\"\n  }\n]\n"
+      },
+      "id": "12da99f8-5adc-4fdf-9549-5e7a07df8370",
+      "name": "Parse AI Output (Idea, Environment, Sound)",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        1424,
+        528
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kNkxgTazjcp90dUMRRhb9QMIoEkYHEMRvl1qhWmFK4g",
+          "mode": "list",
+          "cachedResultName": "Tiktok Idea",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kNkxgTazjcp90dUMRRhb9QMIoEkYHEMRvl1qhWmFK4g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kNkxgTazjcp90dUMRRhb9QMIoEkYHEMRvl1qhWmFK4g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ $json.output[0].Idea }}",
+            "final_output": "={{ $json.output[0].Caption }}",
+            "production": "initialized"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "idea",
+              "displayName": "idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "production",
+              "displayName": "production",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "final_output",
+              "displayName": "final_output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1b53446f-f149-4cb0-8d0b-97095e550dc1",
+      "name": "Save Idea & Metadata to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1600,
+        256
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4Gv3u4UT3sQPc07z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate a creative concept involving:\n\n[[\nA striking BEFORE/AFTER transformation of a single non-human subject (object, environment, or natural phenomenon). The concept must specify:\n- BEFORE state: clear, visually distinct\n- AFTER state: contrasting outcome\n- TRANSITION: one word (e.g., morph, hard cut, timelapse, glitch, wipe, burst)\n- STYLE tags: 2–3 visual adjectives (e.g., cinematic, macro, neon, minimalist)\n- PALETTE: 2–3 color keywords\n- CAMERA: one movement (e.g., slow push-in, top-down, dolly-in)\n- LIGHTING: one descriptor (e.g., soft backlight, moody rim light)\n\nAvoid humans, brands, and clichés (messy→clean room, burger→salad, generic glow-up). Ensure novelty and immediate visual clarity suitable for vertical 9:16.\n\nYour response must follow this exact one-line structure:\n\n\"BEFORE: [short phrase] → AFTER: [short phrase] | TRANSITION: [style] | STYLE: [tag1, tag2] | PALETTE: [color1, color2] | CAMERA: [movement] | LIGHTING: [descriptor]\"\n]]\n\nReflect carefully before answering to ensure originality and visual appeal.\n\nUse the Think tool to review your output\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=**Role:**  \nYou are an AI designed to generate **one original BEFORE/AFTER transformation video concept** optimized for TikTok and the VEO 3 API. Your output must be formatted as a **single-line JSON array** and follow the rules below exactly.\n\n---\n\n### RULES\n\n1. **Number of ideas**  \n   - Return **only one idea**.\n\n2. **Theme**  \n   - The user will always provide the theme: “Before/After transformation.”  \n   - Every idea must clearly show a striking **contrast** between the BEFORE and AFTER states.\n\n3. **Idea**  \n   - Maximum 15 words.  \n   - Describe the transformation in a cinematic, visually appealing way.\n\n4. **Caption**  \n   - Short, punchy, viral-friendly.  \n   - Include **one emoji**.  \n   - Exactly **12 hashtags** in this order:  \n     1. 4 transformation-relevant hashtags  \n     2. 4 all-time most popular hashtags  \n     3. 4 currently trending hashtags (based on live research)  \n   - All in lowercase.\n\n5. **Environment**  \n   - Maximum 20 words.  \n   - Must match the action in the Idea exactly.  \n   - Specify setting (room, landscape, lab…), visual details (lighting, textures, transitions…), and style (cinematic, stylized, timelapse, slow-motion…).\n\n6. **Sound**  \n   - Maximum 15 words.  \n   - Describe the sound design (e.g., “beat drop at transition,” “soft rain before, energetic music after”).\n\n7. **Status**  \n   - Always set to `\"for production\"`.\n\n---\n\n### OUTPUT FORMAT (single-line JSON array)\n\n```json\n[\n  {\n    \"Caption\": \"Your short viral title with emoji #4_topic_hashtags #4_all_time_popular_hashtags #4_trending_hashtags\",\n    \"Idea\": \"Your before/after transformation idea under 15 words\",\n    \"Environment\": \"Your vivid setting under 20 words matching the action\",\n    \"Sound\": \"Your primary sound description under 15 words\",\n    \"Status\": \"for production\"\n  }\n]\n"
+        }
+      },
+      "id": "efc634e7-1dc4-4dcb-af8d-783214747128",
+      "name": "Generate Creative Video Idea",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1168,
+        256
+      ],
+      "typeVersion": 1.9
+    },
+    {
+      "parameters": {},
+      "id": "f8d18f34-e473-46fe-81be-80a41a6f259b",
+      "name": "Think",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "position": [
+        928,
+        960
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"string\",\n  \"final_prompt\": \"string\"\n}\n"
+      },
+      "id": "927dce87-ec13-4dc4-8668-db28055a28b3",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        1056,
+        960
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cc2e0500-57b1-4615-82cb-1c950e5f2ec4",
+              "name": "json_master",
+              "type": "string",
+              "value": "={\n  \"description\": \"Brief narrative description of the scene, focusing on key visual storytelling and product transformation.\",\n  \"style\": \"cinematic | photorealistic | stylized | gritty | elegant\",\n  \"camera\": {\n    \"type\": \"fixed | dolly | Steadicam | crane combo\",\n    \"movement\": \"describe any camera moves like slow push-in, pan, orbit\",\n    \"lens\": \"optional lens type or focal length for cinematic effect\"\n  },\n  \"lighting\": {\n    \"type\": \"natural | dramatic | high-contrast\",\n    \"sources\": \"key lighting sources (sunset, halogen, ambient glow...)\",\n    \"FX\": \"optional VFX elements like fog, reflections, flares\"\n  },\n  \"environment\": {\n    \"location\": \"describe location or room (kitchen, desert, basketball court...)\",\n    \"set_pieces\": [\n      \"list of key background or prop elements\",\n      \"e.g. hardwood floors, chain-link fence, velvet surface\"\n    ],\n    \"mood\": \"describe the ambient atmosphere (moody, clean, epic...)\"\n  },\n  \"elements\": [\n    \"main physical items involved (product box, accessories, vehicles...)\",\n    \"include brand visibility (logos, packaging, texture...)\"\n  ],\n  \"subject\": {\n    \"character\": {\n      \"description\": \"optional – physical description, outfit\",\n      \"pose\": \"optional – position or gesture\",\n      \"lip_sync_line\": \"optional – spoken line if there’s a voiceover\"\n    },\n    \"product\": {\n      \"brand\": \"Brand name\",\n      \"model\": \"Product model or name\",\n      \"action\": \"description of product transformation or assembly\"\n    }\n  },\n  \"motion\": {\n    \"type\": \"e.g. transformation, explosion, vortex\",\n    \"details\": \"step-by-step visual flow of how elements move or evolve\"\n  },\n  \"VFX\": {\n    \"transformation\": \"optional – describe style (neon trails, motion blur...)\",\n    \"impact\": \"optional – e.g. shockwave, glow, distortion\",\n    \"particles\": \"optional – embers, sparks, thread strands...\",\n    \"environment\": \"optional – VFX affecting the scene (ripples, wind...)\"\n  },\n  \"audio\": {\n    \"music\": \"optional – cinematic score, trap beat, ambient tone\",\n    \"sfx\": [\n      \"list of sound effects (zip, pop, woosh...)\"\n    ],\n    \"ambience\": \"optional – background soundscape (traffic, wind...)\",\n    \"voiceover\": {\n      \"delivery\": \"tone and style (confident, whisper, deep...)\",\n      \"line\": \"text spoken if applicable\"\n    }\n  },\n  \"ending\": \"Final shot description – what is seen or felt at the end (freeze frame, logo pulse, glow...)\",\n  \"text\": \"none | overlay | tagline | logo pulse at end only\",\n  \"format\": \"16:9 | 4k | vertical\",\n  \"keywords\": [\n    \"brand\",\n    \"scene style\",\n    \"motion type\",\n    \"camera style\",\n    \"sound mood\",\n    \"target theme\"\n  ]\n}\n"
+            },
+            {
+              "id": "3c6ea609-e426-46d3-8617-2e289a833a64",
+              "name": "model",
+              "type": "string",
+              "value": "veo3_fast"
+            },
+            {
+              "id": "f15acf81-840c-4e09-9ff3-1647b634875f",
+              "name": "aspectRatio",
+              "type": "string",
+              "value": "9:16"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "53955e9e-1a87-4642-9366-30f035a743d0",
+      "name": "Set Master Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1600,
+        496
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a BEFORE/AFTER transformation video prompt using the provided idea.\n\n**Inputs**\n\n- idea : {{ $('Save Idea & Metadata to Google Sheets').item.json.idea }}\n- environment : {{ $('Save Idea & Metadata to Google Sheets').item.json.environment_prompt }}\n- sound : {{ $('Save Idea & Metadata to Google Sheets').item.json.sound_prompt }}\n\n**Rules**\n- The style must be cinematic, visually striking, and optimized for vertical 9:16 TikTok content.\n- Explicitly include: BEFORE scene, AFTER scene, TRANSITION style, CAMERA movement, LIGHTING, COLOR PALETTE, and MOOD.\n- Default model: `veo3_fast` (unless otherwise specified).\n- Output only **one JSON object** with the keys: `title` and `final_prompt`.\n- Use the Think tool to review your output\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=\"system_prompt:\n  ## SYSTEM PROMPT: Structured Transformation Video Prompt Generator\n  A - Ask:\n    Generate a structured BEFORE/AFTER transformation video prompt for VEO 3 cinematic generation, strictly based on the master schema provided in: {{ $json.json_master }}.\n    The final result must be a JSON object with exactly two top-level keys: `title` and `final_prompt`.\n\n  G - Guidance:\n    role: Creative Director\n    output_count: 1\n    character_limit: None\n    constraints:\n      - The output must be valid JSON.\n      - The `title` field should contain a short, descriptive and unique title (max 15 words).\n      - The `final_prompt` field must contain a **single-line JSON string** that follows the exact structure of {{ $json.json_master }} with all fields preserved.\n      - The `final_prompt` string must clearly describe: BEFORE scene, AFTER scene, TRANSITION, CAMERA, LIGHTING, PALETTE, STYLE, and SOUND.\n      - Do not include any explanations, markdown, or extra text — only the JSON object.\n      - Escape all inner quotes in the `final_prompt` string so it is valid as a stringified JSON inside another JSON.\n    tool_usage:\n      - Ensure consistent alignment across all fields (camera, lighting, transition, palette, etc.).\n      - Maintain full structure even for optional fields (use \"none\", \"\", or [] as needed).\n\n  N - Notation:\n    format: JSON\n    expected_output:\n      {\n        \"title\": \"A unique short title for the transformation\",\n        \"final_prompt\": \"{...stringified JSON of the full prompt...}\"\n      }\n\"\n"
+        }
+      },
+      "id": "3be34e3d-18a0-43c8-8908-d1e1e58a00ac",
+      "name": "AI Agent: Generate Video Script",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        832,
+        752
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "id": "b398570b-1772-47c8-908d-76781fdb7fbe",
+      "name": "Wait for VEO3 Rendering",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        1328,
+        928
+      ],
+      "webhookId": "f8f1a8a7-0870-4f09-b732-425a8937f229",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "jsCode": "const structuredPrompt = $input.first().json.output.final_prompt;\nreturn {\n  json: {\n    prompt: JSON.stringify(structuredPrompt), // this escapes it correctly!\n    model: \"veo3_fast\",\n    aspectRatio: \"9:16\"\n  }\n};\n"
+      },
+      "id": "056b5279-4084-4774-8240-b7e8dcc09ba9",
+      "name": "Format Prompt",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1312,
+        720
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "="
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "="
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ $('Save Idea & Metadata to Google Sheets').item.json.idea }}",
+            "final_output": "={{ $json.data.response.resultUrls[0] }}",
+            "production": "in progress"
+          },
+          "matchingColumns": [
+            "idea"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "id",
+              "defaultMatch": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "idea",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "caption",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "production",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "production",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "environment_prompt",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "environment_prompt",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sound_prompt",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "sound_prompt",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "final_output",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "final_output",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "type": "number",
+              "display": true,
+              "removed": true,
+              "readOnly": true,
+              "required": false,
+              "displayName": "row_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "3754cd99-2b4b-4db8-8061-7fee3f6e026a",
+      "name": "URL Final Video",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1040,
+        1168
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4Gv3u4UT3sQPc07z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "="
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "="
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "idea": "={{ $('Save Idea & Metadata to Google Sheets').first().json.idea }}",
+            "production": "done"
+          },
+          "matchingColumns": [
+            "idea"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "id",
+              "defaultMatch": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "idea",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "idea",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "caption",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "production",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "production",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "environment_prompt",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "environment_prompt",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sound_prompt",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "sound_prompt",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "final_output",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "final_output",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "dd24bc21-7f8f-4ac3-9cbb-ec283d25d7b4",
+      "name": "Update Status to \"DONE\"",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1600,
+        1168
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4Gv3u4UT3sQPc07z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Generate AI Viral Videos with VEO3 and Upload to TikTok (By Dr. Firas)\n",
+        "height": 1328,
+        "width": 1152,
+        "color": 7
+      },
+      "id": "a180c910-3476-4a8d-b66f-d8f9070291c8",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        672,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## | INPUT: Starting Idea Section\n\n",
+        "height": 480,
+        "width": 1104,
+        "color": 7
+      },
+      "id": "e457a020-6e1d-4072-89d1-5807b4115efc",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## | Step 2 — Publish Video to TikTok\n",
+        "height": 288,
+        "width": 1104,
+        "color": 3
+      },
+      "id": "0179c2b6-957f-4d2d-9ee2-1709fc1e6f94",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        1088
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## | Step 1 — Generate Video with VEO3",
+        "height": 432,
+        "width": 1104,
+        "color": 7
+      },
+      "id": "2a610391-acad-45d5-b290-9ff8caa9a1fa",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        672
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        528
+      ],
+      "id": "08ced518-3ac2-4e16-9d24-350935234282",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        960
+      ],
+      "id": "0b3e3459-4667-49ca-91e4-b2527cf91e31",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "modelId": {
+          "__rl": true,
+          "value": "models/veo-3.1-lite-generate-preview",
+          "mode": "list",
+          "cachedResultName": "models/veo-3.1-lite-generate-preview"
+        },
+        "prompt": "={{ $json.prompt }}",
+        "returnAs": "url",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        720
+      ],
+      "id": "596cf6a0-6fd4-41b2-9779-940a3d6f47da",
+      "name": "Generate a video",
+      "executeOnce": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "download",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        1168
+      ],
+      "id": "875b68ee-e2f5-4003-bceb-aae849b2f866",
+      "name": "Download a video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "Hallo",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        1168
+      ],
+      "id": "20a99379-dc77-4ea9-9a1f-d7d6eca006a0",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "KvC5E27BxfQvo7pp",
+          "name": "X account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Format Prompt": [
+      {
+        "json": {
+          "prompt": "\"{\\\\\\\"description\\\\\\\": \\\\\\\"A cinematic macro transformation where a parched, cracked desert floor seamlessly morphs into a vibrant, glowing bioluminescent coral reef during a slow push-in.\\\\\\\", \\\\\\\"style\\\\\\\": \\\\\\\"cinematic\\\\\\\", \\\\\\\"camera\\\\\\\": {\\\\\\\"type\\\\\\\": \\\\\\\"dolly\\\\\\\", \\\\\\\"movement\\\\\\\": \\\\\\\"slow macro push-in descending towards the ground fissures\\\\\\\", \\\\\\\"lens\\\\\\\": \\\\\\\"macro lens with shallow depth of field\\\\\\\"}, \\\\\\\"lighting\\\\\\\": {\\\\\\\"type\\\\\\\": \\\\\\\"high-contrast transition\\\\\\\", \\\\\\\"sources\\\\\\\": \\\\\\\"harsh overhead desert sun transitioning to internal bioluminescent glow and deep-sea ambient light\\\\\\\", \\\\\\\"FX\\\\\\\": \\\\\\\"shimmering water reflections and caustic light rays\\\\\\\"}, \\\\\\\"environment\\\\\\\": {\\\\\\\"location\\\\\\\": \\\\\\\"arid desert to deep-sea reef\\\\\\\", \\\\\\\"set_pieces\\\\\\\": [\\\\\\\"cracked mud flats\\\\\\\", \\\\\\\"vibrant coral structures\\\\\\\", \\\\\\\"pulsating sea anemones\\\\\\\"], \\\\\\\"mood\\\\\\\": \\\\\\\"desolate and harsh transitioning to magical and ethereal\\\\\\\"}, \\\\\\\"elements\\\\\\\": [\\\\\\\"parched earth fissures\\\\\\\", \\\\\\\"neon-colored coral\\\\\\\", \\\\\\\"floating bubbles\\\\\\\", \\\\\\\"glowing plankton\\\\\\\"], \\\\\\\"subject\\\\\\\": {\\\\\\\"character\\\\\\\": {\\\\\\\"description\\\\\\\": \\\\\\\"none\\\\\\\", \\\\\\\"pose\\\\\\\": \\\\\\\"none\\\\\\\", \\\\\\\"lip_sync_line\\\\\\\": \\\\\\\"none\\\\\\\"}, \\\\\\\"product\\\\\\\": {\\\\\\\"brand\\\\\\\": \\\\\\\"Nature\\\\\\\", \\\\\\\"model\\\\\\\": \\\\\\\"Ecosystem\\\\\\\", \\\\\\\"action\\\\\\\": \\\\\\\"The dry earth cracks begin to glow blue, filling with liquid as the mud sprouts into soft, organic coral shapes.\\\\\\\"}}, \\\\\\\"motion\\\\\\\": {\\\\\\\"type\\\\\\\": \\\\\\\"organic morph\\\\\\\", \\\\\\\"details\\\\\\\": \\\\\\\"Cracks in the ground widen and emit blue light; dust particles transform into floating underwater bubbles as coral blooms from the dry soil.\\\\\\\"}, \\\\\\\"VFX\\\\\\\": {\\\\\\\"transformation\\\\\\\": \\\\\\\"liquid morph with light trails\\\\\\\", \\\\\\\"impact\\\\\\\": \\\\\\\"gentle light pulse during the state change\\\\\\\", \\\\\\\"particles\\\\\\\": \\\\\\\"dust motes turning into bioluminescent embers and bubbles\\\\\\\", \\\\\\\"environment\\\\\\\": \\\\\\\"visual transition from dry heat haze to liquid ripples\\\\\\\"}, \\\\\\\"audio\\\\\\\": {\\\\\\\"music\\\\\\\": \\\\\\\"deep ambient cinematic swell with ethereal tones\\\\\\\", \\\\\\\"sfx\\\\\\\": [\\\\\\\"dry wind howl\\\\\\\", \\\\\\\"earth cracking\\\\\\\", \\\\\\\"submerged water whoosh\\\\\\\", \\\\\\\"bubbly gurgle\\\\\\\"], \\\\\\\"ambience\\\\\\\": \\\\\\\"transition from whistling desert wind to muffled underwater silence\\\\\\\", \\\\\\\"voiceover\\\\\\\": {\\\\\\\"delivery\\\\\\\": \\\\\\\"none\\\\\\\", \\\\\\\"line\\\\\\\": \\\\\\\"none\\\\\\\"}}, \\\\\\\"ending\\\\\\\": \\\\\\\"Extreme macro close-up of a pulsating coral polyp glowing with intense cyan light.\\\\\\\", \\\\\\\"text\\\\\\\": \\\\\\\"none\\\\\\\", \\\\\\\"format\\\\\\\": \\\\\\\"vertical\\\\\\\", \\\\\\\"keywords\\\\\\\": [\\\\\\\"desert\\\\\\\", \\\\\\\"coral reef\\\\\\\", \\\\\\\"bioluminescent\\\\\\\", \\\\\\\"macro transformation\\\\\\\", \\\\\\\"cinematic\\\\\\\", \\\\\\\"nature morph\\\\\\\"]}\\\\\\\"\"",
+          "model": "veo3_fast",
+          "aspectRatio": "9:16"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent: Generate Video Script",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Final Video": {
+      "main": [
+        [
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Master Prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Generate Video Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for VEO3 Rendering": {
+      "main": [
+        [
+          {
+            "node": "Download a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent: Generate Video Script",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Creative Video Idea": {
+      "main": [
+        [
+          {
+            "node": "Save Idea & Metadata to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Generate Video Script": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Idea & Metadata to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Set Master Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger: Start Daily Content Generation": {
+      "main": [
+        [
+          {
+            "node": "Generate Creative Video Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: Inject Creative Perspective (Idea)": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Creative Video Idea",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output (Idea, Environment, Sound)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Creative Video Idea",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Creative Video Idea",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Generate Video Script",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate a video": {
+      "main": [
+        [
+          {
+            "node": "Wait for VEO3 Rendering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a video": {
+      "main": [
+        [
+          {
+            "node": "URL Final Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Tweet": {
+      "main": [
+        [
+          {
+            "node": "Update Status to \"DONE\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "11bb14ed-55dd-4904-bc34-9b2222f9ae7c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
+  },
+  "nodeGroups": [],
+  "id": "0YMQJWTG8DePc0S9",
+  "tags": []
+}

@@ -1,0 +1,454 @@
+{
+  "name": "Comprehensive_SEO_Strategy_Team",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c8010083-14ca-4ef3-ad4d-1017adcd0dbb",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        144,
+        0
+      ],
+      "webhookId": "seo-webhook-id",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4ed250c7-6ece-4265-b017-7ae4220096c6",
+      "name": "SEO Director Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        928,
+        0
+      ],
+      "typeVersion": 2.1,
+      "executeOnce": true
+    },
+    {
+      "parameters": {},
+      "id": "3455ff04-7be1-41cb-9fe6-f0a047020253",
+      "name": "Think",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "position": [
+        352,
+        -64
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in keyword research, search intent analysis, competitor keyword analysis, and keyword clustering",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "aacae8bc-d24d-496a-aa88-08da197be8a2",
+      "name": "Keyword Research Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        1408,
+        -208
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in SEO-optimized content creation, blog posts, landing pages, and content optimization",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "ff74540a-30fc-45fb-94ef-6c2d3870f474",
+      "name": "SEO Content Writer",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        528,
+        144
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in technical SEO audits, site speed optimization, schema markup, and crawling issues",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "d308b13b-0394-42ab-9afa-1129f777b5df",
+      "name": "Technical SEO Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        1616,
+        16
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in link building strategies, outreach campaigns, and backlink analysis",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "92264ea9-5976-4e6c-8896-c50ce66176ea",
+      "name": "Link Building Strategist",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        1056,
+        224
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in local SEO optimization, Google My Business, local citations, and geo-targeted content",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "5ef635dc-5f7d-4f44-9629-3806fab4a0cf",
+      "name": "Local SEO Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        768,
+        224
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "toolDescription": "call this AI Agent that specializes in SEO performance tracking, Google Analytics, Search Console analysis, and ranking monitoring",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "1b735985-d57f-41db-9c64-b5dd924d6e49",
+      "name": "SEO Analytics Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        1312,
+        144
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        528,
+        288
+      ],
+      "id": "f9ee9f0c-8b54-40cf-a5f0-f02650fdb29a",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        768,
+        352
+      ],
+      "id": "388d60a2-f8be-4dcb-9ea9-9a12f141d678",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        368
+      ],
+      "id": "cbf43b4c-1f18-48ee-9d20-b48a54605965",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        288
+      ],
+      "id": "ac465407-fd1a-4d64-bb37-b38421f8dcdc",
+      "name": "Groq Chat Model4",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-32b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        160
+      ],
+      "id": "82c29be8-5b62-45f2-91b7-b67206058fdc",
+      "name": "Groq Chat Model5",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        -64
+      ],
+      "id": "87293d87-1009-44ae-9bad-766947e8a2aa",
+      "name": "Groq Chat Model6",
+      "credentials": {
+        "groqApi": {
+          "id": "2lXJpMrFLVrWLQL5",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        592,
+        -176
+      ],
+      "id": "0eabb9e7-5aab-426f-a45d-3a55b46cbc8f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2Ydid9vpB0doJDcT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEO Content Writer": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local SEO Specialist": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Link Building Strategist": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEO Analytics Specialist": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical SEO Specialist": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keyword Research Specialist": {
+      "ai_tool": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SEO Content Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Local SEO Specialist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Link Building Strategist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SEO Analytics Specialist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical SEO Specialist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Keyword Research Specialist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SEO Director Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "caea24f6-6915-40e2-828a-589e8c36aeb9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7edbd0b12e1df806a29efe188817e5329f83e607c09d73ef96c65b45c25ae1fc"
+  },
+  "nodeGroups": [],
+  "id": "0VnZ5YAe0JGCegvV",
+  "tags": []
+}
