@@ -18,7 +18,7 @@ Whether you want to manage your life via Telegram, automate lead qualification, 
 
 ## 📑 Table of Contents
 
-- [🤖 n8n Automations Repository](#-n8n-automations-repository)
+- [🎱 n8n Automations Repository](#-n8n-automations-repository)
   - [📙 Introduction](#-introduction)
   - [📑 Table of Contents](#-table-of-contents)
   - [⚙️ Technical Stack](#️-technical-stack)
@@ -62,6 +62,7 @@ The automations integrate with a wide range of services and tools:
 ```plaintext
 n8n-Automations/
 |
+|  // Workflow Folders
 ├── 1_Life_Manager_Telegram_Bot/
 │   └── Life_Manager_Telegram_Bot.json
 |
